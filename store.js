@@ -1,39 +1,10 @@
-import { createStore } from 'redux'
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import reduxLogger from 'redux-logger';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import cartReducer from './redux/cartReducer';
 
-const initialState = {
-  lastUpdate: 0,
-  light: false,
-  count: 0,
-}
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'TICK':
-      return {
-        ...state,
-        lastUpdate: action.lastUpdate,
-        light: !!action.light,
-      }
-    case 'INCREMENT':
-      return {
-        ...state,
-        count: state.count + 1,
-      }
-    case 'DECREMENT':
-      return {
-        ...state,
-        count: state.count - 1,
-      }
-    case 'RESET':
-      return {
-        ...state,
-        count: initialState.count,
-      }
-    default:
-      return state
-  }
-}
-
-export const initializeStore = (preloadedState = initialState) => {
-  return createStore(reducer, preloadedState)
+export const initializeStore = () => {
+    const middlewares = applyMiddleware(reduxLogger);
+    const reducers = combineReducers({cartReducer});
+    return createStore(reducers, composeWithDevTools(middlewares));
 }
